@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Test {
@@ -73,4 +74,24 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model DeviceCode {
+  id                       String    @id
+  deviceCode               String    @unique
+  userCode                 String    @unique
+  clientId                 String
+  scope                    String?
+  status                   String    @default("pending")
+  expiresAt                DateTime
+  pollingInterval          Int?
+  lastPolledAt             DateTime?
+  verificationUri          String?
+  verificationUriComplete  String?
+  userId                   String?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  @@index([userCode])
+  @@map("deviceCode")
 }
